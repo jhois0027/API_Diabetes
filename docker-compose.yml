@@ -1,0 +1,37 @@
+version: "2.2"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_diabetes
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: diabetes
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+
+  api:
+    build: .
+    container_name: fastapi_app
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: rootpass
+      DB_NAME: diabetes
+    command: >
+      sh -c "
+      python train.py &&
+      uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+volumes:
+  mysql_data:
