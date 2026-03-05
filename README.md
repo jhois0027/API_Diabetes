@@ -20,20 +20,19 @@ API RESTful desarrollada con FastAPI para gestionar información de pacientes y 
 
 📂 **Estructura del proyecto**
 Proyect/
-├── .vagrant/ # Configuración de Vagrant
-├── modelo.pkl # Modelo entrenado
-├── test/
-│ └── test_main.py # Pruebas automatizadas de la API
-├── docker-compose.yml # Configuración de servicios Docker
-├── Dockerfile # Imagen de la aplicación
-├── init.sql # Script de inicialización de MySQL
-├── main.py # API principal
-├── readme.md # Documentación del proyecto
-├── requirements.txt # Dependencias de Python
-├── seed_data/ # Datos iniciales para la base de datos
-├── images_prueba/ # Imágenes de ejemplo para pruebas y documentación
-├── train.py # Entrenamiento del modelo ML
-└── Vagrantfile # Configuración de máquina virtual (opcional)
+├─ .vagrant/                  # Configuración de Vagrant
+├─ modelo.pkl                 # Modelo entrenado
+├─ test/
+│   └─ test_main.py           # Pruebas automatizadas de la API
+├─ docker-compose.yml         # Configuración de servicios Docker
+├─ Dockerfile                 # Imagen de la aplicación
+├─ init.sql                   # Script de inicialización de MySQL
+├─ main.py                    # API principal
+├─ readme.md                  # Documentación del proyecto
+├─ requirements.txt           # Dependencias de Python
+├─ seed_data/                 # Datos iniciales para la base de datos
+├─ train.py                   # Entrenamiento del modelo ML
+└─ Vagrantfile                # Configuración de máquina virtual (opcional)
 
 
 📦 **Requisitos / Dependencias**
