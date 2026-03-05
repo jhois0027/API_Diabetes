@@ -18,21 +18,33 @@ API RESTful desarrollada con FastAPI para gestionar información de pacientes y 
 
 **Despliegue:** Railway / Docker
 
+
 📂 **Estructura del proyecto**
 Proyect/
-├─ .vagrant/                  # Configuración de Vagrant
-├─ modelo.pkl                 # Modelo entrenado
-├─ test/
-│   └─ test_main.py           # Pruebas automatizadas de la API
-├─ docker-compose.yml         # Configuración de servicios Docker
-├─ Dockerfile                 # Imagen de la aplicación
-├─ init.sql                   # Script de inicialización de MySQL
-├─ main.py                    # API principal
-├─ readme.md                  # Documentación del proyecto
-├─ requirements.txt           # Dependencias de Python
-├─ seed_data/                 # Datos iniciales para la base de datos
-├─ train.py                   # Entrenamiento del modelo ML
-└─ Vagrantfile                # Configuración de máquina virtual (opcional)
+├── .vagrant/                  # Configuración de Vagrant
+├── modelo.pkl                 # Modelo entrenado
+├── test/
+│   └── test_main.py           # Pruebas automatizadas de la API
+├── docker-compose.yml         # Configuración de servicios Docker
+├── Dockerfile                 # Imagen de la aplicación
+├── init.sql                   # Script de inicialización de MySQL
+├── main.py                    # API principal
+├── readme.md                  # Documentación del proyecto
+├── requirements.txt           # Dependencias de Python
+├── seed_data/                 # Datos iniciales para la base de datos
+├── images_prueba/             # Imágenes de ejemplo para pruebas y documentación
+│   ├── 1Prueba1.jpeg
+│   ├── 2Respuesta1.jpeg
+│   ├── 3Prueba2.jpeg
+│   ├── 4Respuesta2.jpeg
+│   ├── 5Prueba3_post-crear.jpeg
+│   ├── 6Resultado3_post-creado.jpeg
+│   ├── 7Registro_pacientes.jpeg
+│   ├── 8Prueba_paciente-actualiz.jpeg
+│   ├── 9Resultado_paciente-actualiz.jpeg
+│   └── 10paciente_actualizado-mysql.jpeg
+├── train.py                   # Entrenamiento del modelo ML
+└── Vagrantfile                # Configuración de máquina virtual
 
 
 📦 **Requisitos / Dependencias**
@@ -61,6 +73,7 @@ Verificar la API en:
 http://localhost:8000/docs
 
 La documentación interactiva de FastAPI permite probar todos los endpoints fácilmente.
+
 
 🛠 **Endpoints**
 Endpoint de prueba
@@ -116,6 +129,7 @@ MySQL 8.0 con persistencia mediante volúmenes y init.sql
 API FastAPI con dependencias instaladas automáticamente
 
 Carpeta pkl/ montada para almacenar el modelo .pkl
+
 
 
 🚀 **Publicación en Docker Hub**
