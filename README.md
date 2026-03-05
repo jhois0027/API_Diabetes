@@ -20,31 +20,43 @@ API RESTful desarrollada con FastAPI para gestionar información de pacientes y 
 
 
 📂 **Estructura del proyecto**
-Proyect/
-├── .vagrant/                  # Configuración de Vagrant
-├── modelo.pkl                 # Modelo entrenado
+## Estructura del proyecto
+
+```
+Proyecto/
+│
+├── .vagrant/                    # Configuración de Vagrant
+├── Vagrantfile                  # Configuración de máquina virtual
+│
+├── docker-compose.yml           # Configuración de servicios Docker
+├── Dockerfile                   # Imagen de la aplicación
+│
+├── main.py                      # API principal
+├── train.py                     # Entrenamiento del modelo ML
+├── modelo.pkl                   # Modelo entrenado
+│
+├── requirements.txt             # Dependencias de Python
+├── readme.md                    # Documentación del proyecto
+│
+├── init.sql                     # Script de inicialización de MySQL
+│
+├── seed_data/                   # Datos iniciales para la base de datos
+│
 ├── test/
-│   └── test_main.py           # Pruebas automatizadas de la API
-├── docker-compose.yml         # Configuración de servicios Docker
-├── Dockerfile                 # Imagen de la aplicación
-├── init.sql                   # Script de inicialización de MySQL
-├── main.py                    # API principal
-├── readme.md                  # Documentación del proyecto
-├── requirements.txt           # Dependencias de Python
-├── seed_data/                 # Datos iniciales para la base de datos
-├── images_prueba/             # Imágenes de ejemplo para pruebas y documentación
-│   ├── 1Prueba1.jpeg
-│   ├── 2Respuesta1.jpeg
-│   ├── 3Prueba2.jpeg
-│   ├── 4Respuesta2.jpeg
-│   ├── 5Prueba3_post-crear.jpeg
-│   ├── 6Resultado3_post-creado.jpeg
-│   ├── 7Registro_pacientes.jpeg
-│   ├── 8Prueba_paciente-actualiz.jpeg
-│   ├── 9Resultado_paciente-actualiz.jpeg
-│   └── 10paciente_actualizado-mysql.jpeg
-├── train.py                   # Entrenamiento del modelo ML
-└── Vagrantfile                # Configuración de máquina virtual
+│   └── test_main.py             # Pruebas automatizadas de la API
+│
+└── images_prueba/               # Imágenes de ejemplo para pruebas
+    ├── 1Prueba1.jpeg
+    ├── 2Respuesta1.jpeg
+    ├── 3Prueba2.jpeg
+    ├── 4Respuesta2.jpeg
+    ├── 5Prueba3_post-crear.jpeg
+    ├── 6Resultado_post-creado.jpeg
+    ├── 7Registro_pacientes.jpeg
+    ├── 8Prueba_paciente-actualiz.jpeg
+    ├── 9Resultado_paciente-actualiz.jpeg
+    └── 10paciente_actualizado-mysql.jpeg
+```
 
 
 📦 **Requisitos / Dependencias**
