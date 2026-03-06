@@ -24,11 +24,11 @@ class PrediccionInput(BaseModel):
 def get_db_connection():
     try:
         conn = mysql.connector.connect(
-            host=os.getenv("MYSQLHOST", "mysql.railway.internal"),
-            user=os.getenv("MYSQLUSER", "root"),
-            password=os.getenv("MYSQLPASSWORD", "rootpass"),
-            database=os.getenv("MYSQLDATABASE", "railway"),
-            port=int(os.getenv("MYSQLPORT", 3306))
+            host=os.getenv("DB_HOST", "mysql_diabetes"),  # nombre del contenedor MySQL
+            user=os.getenv("DB_USER", "root"),           # usuario MySQL
+            password=os.getenv("DB_PASSWORD", "rootpass"), # contraseña MySQL
+            database=os.getenv("DB_NAME", "diabetes"),   # nombre de la base de datos
+            port=int(os.getenv("DB_PORT", 3306))
         )
         return conn
     except mysql.connector.Error as e:
