@@ -3,7 +3,7 @@ import random
 
 # Si es en local usa http://localhost:8080
 # Si es en Railway usa la URL que te den https://tu-app.up.railway.app
-BASE_URL = "http://localhost:8080" 
+BASE_URL = "https://apidiabetes-production.up.railway.app" 
 
 def poblar_datos(n=50):
     print(f"Iniciando carga de {n} pacientes...")

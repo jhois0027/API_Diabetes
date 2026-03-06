@@ -21,20 +21,19 @@ class PrediccionInput(BaseModel):
     glucosa: int
     edad: int
 
-# Conexión a la base de datos
 def get_db_connection():
     try:
-        return mysql.connector.connect(
-            host=os.getenv("MYSQLHOST"),
-            user=os.getenv("MYSQLUSER"),
-            password=os.getenv("MYSQLPASSWORD"),
-            database=os.getenv("MYSQLDATABASE"),
+        conn = mysql.connector.connect(
+            host=os.getenv("MYSQLHOST", "mysql.railway.internal"),
+            user=os.getenv("MYSQLUSER", "root"),
+            password=os.getenv("MYSQLPASSWORD", "rootpass"),
+            database=os.getenv("MYSQLDATABASE", "railway"),
             port=int(os.getenv("MYSQLPORT", 3306))
         )
+        return conn
     except mysql.connector.Error as e:
         print("Error conectando a MySQL:", e)
         return None
-
 # Rutas
 @app.get("/")
 def read_root():
