@@ -1,11 +1,18 @@
-FROM python:3.10-slim
+# Dockerfile para Railway
+FROM python:3.11
 
+# Directorio de trabajo en el contenedor
 WORKDIR /app
 
+# Copiar dependencias e instalar
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar todo el proyecto al contenedor
 COPY . .
 
-RUN pip install --no-cache-dir fastapi uvicorn mysql-connector-python pandas scikit-learn joblib pytest httpx
-
+# Exponer puerto (opcional, Railway lo maneja)
 EXPOSE 8000
 
-CMD uvicorn main:app --host 0.0.0.0 --port $PORT
+# Comando para iniciar la API usando la variable $PORT de Railway
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]

@@ -5,10 +5,12 @@ from sklearn.linear_model import LogisticRegression
 import joblib
 import os
 
-DB_HOST = os.getenv("DB_HOST", "mysql")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "rootpass")
-DB_NAME = os.getenv("DB_NAME", "diabetes")
+# Variables de entorno para Railway
+DB_HOST = os.getenv("MYSQLHOST", "mysql.railway.internal")
+DB_USER = os.getenv("MYSQLUSER", "root")
+DB_PASSWORD = os.getenv("MYSQLPASSWORD", "rootpass")
+DB_NAME = os.getenv("MYSQLDATABASE", "railway")
+DB_PORT = int(os.getenv("MYSQLPORT", 3306))
 
 def train_model():
     # Conexión a la base de datos
@@ -16,7 +18,8 @@ def train_model():
         host=DB_HOST,
         user=DB_USER,
         password=DB_PASSWORD,
-        database=DB_NAME
+        database=DB_NAME,
+        port=DB_PORT
     )
 
     # Leer datos
@@ -31,9 +34,9 @@ def train_model():
     modelo = LogisticRegression()
     modelo.fit(X, y)
 
-    # Guardar modelo
-    joblib.dump(modelo, "model.pkl")
-    print("Modelo entrenado y guardado en model.pkl")
+    # Guardar modelo dentro del contenedor en /app/
+    joblib.dump(modelo, "/app/model.pkl")
+    print("✅ Modelo entrenado y guardado en /app/model.pkl")
 
 if __name__ == "__main__":
     train_model()

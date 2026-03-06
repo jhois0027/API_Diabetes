@@ -8,13 +8,13 @@ import uvicorn
 
 app = FastAPI()
 
-# Modelo ML
-MODEL_PATH = "model.pkl"
+# Cargar modelo
+MODEL_PATH = "/app/model.pkl"
 try:
     modelo = joblib.load(MODEL_PATH)
 except FileNotFoundError:
     modelo = None
-    print("⚠️ Modelo no encontrado, asegúrate de subir model.pkl al repositorio.")
+    print("⚠️ Modelo no encontrado. Se entrenará automáticamente dentro del contenedor si se ejecuta train.py.")
 
 # Entrada para predicción
 class PrediccionInput(BaseModel):
@@ -24,10 +24,10 @@ class PrediccionInput(BaseModel):
 # Función para conectarse a la base de datos
 def get_db_connection():
     return mysql.connector.connect(
-        host=os.getenv("MYSQLHOST"),
-        user=os.getenv("MYSQLUSER"),
-        password=os.getenv("MYSQLPASSWORD"),
-        database=os.getenv("MYSQLDATABASE"),
+        host=os.getenv("MYSQLHOST", "mysql.railway.internal"),
+        user=os.getenv("MYSQLUSER", "root"),
+        password=os.getenv("MYSQLPASSWORD", "rootpass"),
+        database=os.getenv("MYSQLDATABASE", "railway"),
         port=int(os.getenv("MYSQLPORT", 3306))
     )
 
@@ -80,7 +80,7 @@ def eliminar(id: int):
 @app.post("/prediccion")
 def prediccion(input: PrediccionInput):
     if modelo is None:
-        raise HTTPException(status_code=500, detail="Modelo no encontrado. Sube model.pkl primero.")
+        raise HTTPException(status_code=500, detail="Modelo no encontrado. Ejecuta train.py primero.")
     datos = np.array([[input.glucosa, input.edad]])
     resultado = modelo.predict(datos)
     return {
@@ -91,5 +91,5 @@ def prediccion(input: PrediccionInput):
 
 # Main
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8080))  # Puerto dinámico que Railway asigna
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    port = int(os.getenv("PORT", 8080))  # Puerto dinámico de Railway
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
