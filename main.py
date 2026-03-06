@@ -8,28 +8,32 @@ import uvicorn
 
 app = FastAPI()
 
-# Cargar modelo
-MODEL_PATH = "/app/model.pkl"
+# Modelo ML
+MODEL_PATH = "model.pkl"
 try:
     modelo = joblib.load(MODEL_PATH)
 except FileNotFoundError:
     modelo = None
-    print("⚠️ Modelo no encontrado. Se entrenará automáticamente dentro del contenedor si se ejecuta train.py.")
+    print("⚠️ Modelo no encontrado, asegúrate de subir model.pkl al repositorio.")
 
 # Entrada para predicción
 class PrediccionInput(BaseModel):
     glucosa: int
     edad: int
 
-# Función para conectarse a la base de datos
+# Conexión a la base de datos
 def get_db_connection():
-    return mysql.connector.connect(
-        host=os.getenv("MYSQLHOST", "mysql.railway.internal"),
-        user=os.getenv("MYSQLUSER", "root"),
-        password=os.getenv("MYSQLPASSWORD", "rootpass"),
-        database=os.getenv("MYSQLDATABASE", "railway"),
-        port=int(os.getenv("MYSQLPORT", 3306))
-    )
+    try:
+        return mysql.connector.connect(
+            host=os.getenv("MYSQLHOST"),
+            user=os.getenv("MYSQLUSER"),
+            password=os.getenv("MYSQLPASSWORD"),
+            database=os.getenv("MYSQLDATABASE"),
+            port=int(os.getenv("MYSQLPORT", 3306))
+        )
+    except mysql.connector.Error as e:
+        print("Error conectando a MySQL:", e)
+        return None
 
 # Rutas
 @app.get("/")
@@ -39,6 +43,8 @@ def read_root():
 @app.get("/datos")
 def listar():
     conn = get_db_connection()
+    if not conn:
+        raise HTTPException(status_code=500, detail="No se pudo conectar a la base de datos")
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM pacientes")
     resultado = cursor.fetchall()
@@ -49,6 +55,8 @@ def listar():
 @app.post("/crear")
 def crear(glucosa: int, edad: int, riesgo: int):
     conn = get_db_connection()
+    if not conn:
+        raise HTTPException(status_code=500, detail="No se pudo conectar a la base de datos")
     cursor = conn.cursor()
     cursor.execute("INSERT INTO pacientes (glucosa, edad, riesgo) VALUES (%s, %s, %s)",
                    (glucosa, edad, riesgo))
@@ -57,30 +65,10 @@ def crear(glucosa: int, edad: int, riesgo: int):
     conn.close()
     return {"mensaje": "Registro creado exitosamente"}
 
-@app.put("/actualizar/{id}")
-def actualizar(id: int, glucosa: int):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("UPDATE pacientes SET glucosa=%s WHERE id=%s", (glucosa, id))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return {"mensaje": f"Paciente {id} actualizado"}
-
-@app.delete("/eliminar/{id}")
-def eliminar(id: int):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM pacientes WHERE id=%s", (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return {"mensaje": f"Registro {id} eliminado"}
-
 @app.post("/prediccion")
 def prediccion(input: PrediccionInput):
     if modelo is None:
-        raise HTTPException(status_code=500, detail="Modelo no encontrado. Ejecuta train.py primero.")
+        raise HTTPException(status_code=500, detail="Modelo no encontrado. Sube model.pkl primero.")
     datos = np.array([[input.glucosa, input.edad]])
     resultado = modelo.predict(datos)
     return {
@@ -91,5 +79,5 @@ def prediccion(input: PrediccionInput):
 
 # Main
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8080))  # Puerto dinámico de Railway
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+    port = int(os.getenv("PORT", 8080))  # Railway asigna este puerto
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
