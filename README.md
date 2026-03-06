@@ -33,7 +33,7 @@ Proyecto/
 │
 ├── main.py                      # API principal
 ├── train.py                     # Entrenamiento del modelo ML
-├── modelo.pkl                   # Modelo entrenado
+├── model.pkl                   # Modelo entrenado
 │
 ├── requirements.txt             # Dependencias de Python
 ├── readme.md                    # Documentación del proyecto
