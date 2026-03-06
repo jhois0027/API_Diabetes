@@ -4,33 +4,38 @@ import mysql.connector
 import joblib
 import numpy as np
 import os
+import uvicorn
 
 app = FastAPI()
 
+# Modelo ML
+MODEL_PATH = "model.pkl"
+try:
+    modelo = joblib.load(MODEL_PATH)
+except FileNotFoundError:
+    modelo = None
+    print("⚠️ Modelo no encontrado, asegúrate de subir model.pkl al repositorio.")
+
+# Entrada para predicción
 class PrediccionInput(BaseModel):
     glucosa: int
     edad: int
 
-# Cargar modelo
-MODEL_PATH = "model.pkl"
-try:
-    modelo = joblib.load(MODEL_PATH)
-except:
-    modelo = None
-
+# Función para conectarse a la base de datos
 def get_db_connection():
     return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "mysql"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", "rootpass"),
-        database=os.getenv("DB_NAME", "diabetes")
+        host=os.getenv("MYSQLHOST"),
+        user=os.getenv("MYSQLUSER"),
+        password=os.getenv("MYSQLPASSWORD"),
+        database=os.getenv("MYSQLDATABASE"),
+        port=int(os.getenv("MYSQLPORT", 3306))
     )
 
+# Rutas
 @app.get("/")
 def read_root():
     return {"mensaje": "API de Predicción de Diabetes funcionando", "modelo_cargado": modelo is not None}
 
-# CRUD
 @app.get("/datos")
 def listar():
     conn = get_db_connection()
@@ -72,11 +77,10 @@ def eliminar(id: int):
     conn.close()
     return {"mensaje": f"Registro {id} eliminado"}
 
-# Predicción
 @app.post("/prediccion")
 def prediccion(input: PrediccionInput):
     if modelo is None:
-        raise HTTPException(status_code=500, detail="Modelo no encontrado. Ejecuta train.py primero.")
+        raise HTTPException(status_code=500, detail="Modelo no encontrado. Sube model.pkl primero.")
     datos = np.array([[input.glucosa, input.edad]])
     resultado = modelo.predict(datos)
     return {
@@ -84,3 +88,8 @@ def prediccion(input: PrediccionInput):
         "edad": input.edad,
         "prediccion_riesgo": int(resultado[0])
     }
+
+# Main
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8080))  # Puerto dinámico que Railway asigna
+    uvicorn.run(app, host="0.0.0.0", port=port)
